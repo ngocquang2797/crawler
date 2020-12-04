@@ -29,10 +29,8 @@ def set_chrome_options() -> None:
     chrome_prefs["profile.default_content_settings"] = {"images": 2}
     return chrome_options
 
+# crawl list id skybox in main page
 def list_skyId(url):
-    # desired_capabilities = DesiredCapabilities().CHROME
-    # desired_capabilities['marionette'] = True
-    # desired_capabilities['pageLoadStrategy'] = 'none'  # interactive
 
     try:
         driver = Chrome(desired_capabilities=desired_capabilities, options=set_chrome_options())
@@ -65,7 +63,8 @@ def list_skyId(url):
         #     'description': columns[6], }
         data.append(columns[0])
     return data
-#
+
+# crawl detail of element
 def detail_id(id):
     url = 'https://www.vulnerabilitycenter.com/svc/SVC.html?fbclid=IwAR3qa6zE2HiESzv7hxIIvnlg7b6VEJ9tfrQ2-p6XwenFHLCEUJpPEqoBwsI#!vul={}'.format(
         id)
