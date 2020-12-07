@@ -1,4 +1,5 @@
-FROM python:3.8-slim-buster
+#FROM python:3.8-slim-buster
+FROM python:3.8
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -6,6 +7,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 RUN apt-get update \
   # dependencies for building Python packages
   && apt-get install -y build-essential \
+
+  && apt install -y tor \
   # translations dependencies
   && apt-get install -y gettext \
   # Google Chrome installation dependencies
@@ -13,6 +16,8 @@ RUN apt-get update \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
+
+RUN service tor start
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements.txt /requirements.txt
@@ -31,9 +36,18 @@ RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 RUN chmod 777 /usr/local/bin/chromedriver
 
+RUN pip install requests
+RUN pip install requests[socks]
+RUN pip install requests[security]
+
+#RUN apt-get install build-essential
+#RUN apt-get install libssl-dev
+#RUN apt-get install libffi-dev
+#RUN apt-get install python-dev
+
 # expose display to X11
 ENV DISPLAY=:99
 
 WORKDIR /app
 
-CMD ["python", "./crawler.py"]
+#CMD ["python", "./crawler.py"]
