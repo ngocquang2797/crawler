@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 RUN apt-get update \
   # dependencies for building Python packages
   && apt-get install -y build-essential \
-
+  # install tor
   && apt install -y tor \
   # translations dependencies
   && apt-get install -y gettext \
@@ -19,9 +19,17 @@ RUN apt-get update \
 
 RUN service tor start
 
+RUN sh -c 'echo "ControlPort 9051" >> /etc/tor/torrc' \
+ && sh -c 'echo "CookieAuthentication 1" >> /etc/tor/torrc' \
+ && service tor restart
+
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
+
+RUN pip install requests
+RUN pip install requests[socks]
+RUN pip install requests[security]
 
 # install Google Chrome
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
@@ -36,10 +44,6 @@ RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 RUN chmod 777 /usr/local/bin/chromedriver
 
-RUN pip install requests
-RUN pip install requests[socks]
-RUN pip install requests[security]
-
 #RUN apt-get install build-essential
 #RUN apt-get install libssl-dev
 #RUN apt-get install libffi-dev
@@ -49,5 +53,3 @@ RUN pip install requests[security]
 ENV DISPLAY=:99
 
 WORKDIR /app
-
-#CMD ["python", "./crawler.py"]
