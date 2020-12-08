@@ -11,10 +11,18 @@ from selenium.webdriver.chrome.options import Options
 
 import time
 import json
+import argparse
 
 desired_capabilities = DesiredCapabilities().CHROME
 desired_capabilities['marionette'] = True
 desired_capabilities['pageLoadStrategy'] = 'none'  # interactive
+
+def parse_args():
+    parser = argparse.ArgumentParser("Crawler tool for vulnerabilitycenter website ")
+    parser.add_argument("-k", "--keyword", type=str, default="cve", help="keyword for searching")
+    # parser.add_argument("-s", "--startdate", type=str, default=None, help="which seed to use. Ex: 11/30/2020")
+    # parser.add_argument("-e", "--enddate", type=str, default=None, help="which seed to use")
+    return parser.parse_args()
 
 def set_chrome_options() -> None:
     """Sets chrome options for Selenium.
@@ -131,7 +139,10 @@ def detail_id(id):
 
 
 def main():
-    url = 'https://www.vulnerabilitycenter.com/svc/SVC.html?fbclid=IwAR3qa6zE2HiESzv7hxIIvnlg7b6VEJ9tfrQ2-p6XwenFHLCEUJpPEqoBwsI#search=@from=1/1/2019@to=12/31/2019@phrase=+vendor:Jenkins%20CI%20+severity:critical'
+    args = parse_args()
+
+    url = 'https://www.vulnerabilitycenter.com/svc/SVC.html?fbclid=IwAR3qa6zE2HiESzv7hxIIvnlg7b6VEJ9tfrQ2-p6XwenFHLCEUJpPEqoBwsI#search={}'.format(args.keyword)
+    print(url)
     ids = list_skyId(url)
     # ids = ['97539', '102448', '99861', '108858', '100700', '99917', '101087']
     print(ids)
