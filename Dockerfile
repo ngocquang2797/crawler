@@ -1,5 +1,5 @@
-#FROM python:3.8-slim-buster
-FROM python:3.8
+FROM python:3.8-slim-buster
+#FROM python:3.8
 
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,11 +17,11 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-RUN service tor start
-
-RUN sh -c 'echo "ControlPort 9051" >> /etc/tor/torrc' \
- && sh -c 'echo "CookieAuthentication 1" >> /etc/tor/torrc' \
- && service tor restart
+#RUN service tor start
+#
+#RUN sh -c 'echo "ControlPort 9051" >> /etc/tor/torrc' \
+# && sh -c 'echo "CookieAuthentication 1" >> /etc/tor/torrc' \
+# && service tor restart
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements.txt /requirements.txt
@@ -43,11 +43,6 @@ RUN wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`cu
 RUN unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
 
 RUN chmod 777 /usr/local/bin/chromedriver
-
-#RUN apt-get install build-essential
-#RUN apt-get install libssl-dev
-#RUN apt-get install libffi-dev
-#RUN apt-get install python-dev
 
 # expose display to X11
 ENV DISPLAY=:99
