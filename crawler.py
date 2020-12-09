@@ -162,16 +162,21 @@ def main():
     args = parse_args()
 
     url = 'https://www.vulnerabilitycenter.com/svc/SVC.html?fbclid=IwAR3qa6zE2HiESzv7hxIIvnlg7b6VEJ9tfrQ2-p6XwenFHLCEUJpPEqoBwsI#search={}'.format(args.keyword)
+
+    db = vulnerDB()
+
     print(url)
     ids = list_skyId(url)
     # ids = ['97539', '102448', '99861', '108858', '100700', '99917', '101087']
     print(ids)
-    with open("data.json", "r+") as file:
-        data = json.load(file)
-        for id in ids:
-            data.append(detail_id(id))
-            file.seek(0)
-            json.dump(data, file)
+    for id in ids:
+        db.insertData(detail_id(id))
+    # with open("data.json", "r+") as file:
+    #     data = json.load(file)
+    #     for id in ids:
+    #         data.append(detail_id(id))
+    #         file.seek(0)
+    #         json.dump(data, file)
 
 if __name__ == "__main__":
     main()
