@@ -13,6 +13,10 @@ import time
 import json
 import argparse
 
+from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
+
+
 desired_capabilities = DesiredCapabilities().CHROME
 desired_capabilities['marionette'] = True
 desired_capabilities['pageLoadStrategy'] = 'none'  # interactive
@@ -137,6 +141,22 @@ def detail_id(id):
     print(data)
     return data
 
+class vulnerDB():
+    def __init__(self):
+        self.client = MongoClient('mongodb://root:example@mongodb:27017/')
+        if "vulnerabilitycenter" in self.client.list_database_names():
+            print("Connect to DB")
+        else:
+            self.mydb = self.client["vulnerabilitycenter"]
+            print("Create DB")
+
+        if "vulnerabilities" in self.mydb.list_collection_names():
+            print("connect collection")
+        else:
+            self.mycol = self.mydb["vulnerabilities"]
+
+    def insertData(self, data):
+        self.mycol.insert_one(data)
 
 def main():
     args = parse_args()

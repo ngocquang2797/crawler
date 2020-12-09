@@ -1,5 +1,8 @@
 version: '3'
 
+volumes:
+  mongo_data: { }
+
 services:
   crawler:
     build:
@@ -13,14 +16,17 @@ services:
       - '80:3000'
     external_links:
       - mongo
-  mongo:
+
+  mongodb:
     container_name: mongo
-    image: mongo
+    image: mongo:latest
     restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ngocquang2797
-      MONGO_INITDB_ROOT_PASSWORD: 123456789
+    env_file:
+      - .env
     volumes:
-      - ./mongo:/docker-entrypoint-initdb.d
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
     ports:
-      - '27017:27017'
+      - '${MONGODB_PORT}:27017'
